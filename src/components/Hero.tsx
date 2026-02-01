@@ -1,18 +1,21 @@
 import { useRef } from "react";
-import { getCardTransform, type MousePosition } from "@/lib/getCardTransform";
+import slingImage from "../assets/slingpng.webp";
 
-type HeroSectionProps = {
-  slingImage: string;
-  globalMousePos: MousePosition;
-};
+interface HeroProps {
+  getCardTransform: (cardRef: React.RefObject<HTMLElement>, intensity?: number) => {
+    rotX: number;
+    rotY: number;
+    shadowX: number;
+    shadowY: number;
+  };
+}
 
-const HeroSection = ({ slingImage, globalMousePos }: HeroSectionProps) => {
+export function Hero({ getCardTransform }: HeroProps) {
   const slingCardRef = useRef<HTMLDivElement>(null);
-  const transform = getCardTransform(slingCardRef, globalMousePos, 0.5);
 
   return (
     <section className="relative overflow-hidden" id="empresa">
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/30 via-transparent to-transparent animate-gradient-shift" />
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24">
         <div className="space-y-6">
           <p className="text-sm uppercase tracking-[0.3em] text-amber-200/80">
@@ -50,14 +53,17 @@ const HeroSection = ({ slingImage, globalMousePos }: HeroSectionProps) => {
           </div>
         </div>
 
-        <div ref={slingCardRef} className="relative">
+        <div 
+          ref={slingCardRef}
+          className="relative"
+        >
           <div className="absolute -inset-6 rounded-[32px] bg-gradient-to-br from-amber-500/30 via-transparent to-transparent blur-2xl" />
-          <div
+          <div 
             className="relative overflow-hidden rounded-[32px] border border-amber-500/40 bg-slate-900/70 p-6"
-            style={{
+            style={{ 
               perspective: "1200px",
-              transform: `perspective(1200px) rotateX(${transform.rotX}deg) rotateY(${transform.rotY}deg)`,
-              filter: `drop-shadow(${transform.shadowX}px ${transform.shadowY}px 30px rgba(251, 191, 36, 0.15))`,
+              transform: `perspective(1200px) rotateX(${getCardTransform(slingCardRef, 0.5).rotX}deg) rotateY(${getCardTransform(slingCardRef, 0.5).rotY}deg)`,
+              filter: `drop-shadow(${getCardTransform(slingCardRef, 0.5).shadowX}px ${getCardTransform(slingCardRef, 0.5).shadowY}px 30px rgba(251, 190, 36, 0.08))`,
               transition: "transform 0.3s ease-out, filter 0.3s ease-out",
               backfaceVisibility: "hidden",
             }}
@@ -81,6 +87,4 @@ const HeroSection = ({ slingImage, globalMousePos }: HeroSectionProps) => {
       </div>
     </section>
   );
-};
-
-export default HeroSection;
+}

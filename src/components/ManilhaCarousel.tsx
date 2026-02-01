@@ -1,26 +1,51 @@
 import { useRef } from "react";
-import { getCardTransform, type MousePosition } from "@/lib/getCardTransform";
-import type { Manilha } from "@/types";
+import manilhaG4151 from "../assets/manilha_carga_g4151.png";
+import manilhaG4153 from "../assets/manilha_carga_g4153.png";
+import manilhaG4161 from "../assets/manilha_carga_g4161.webp";
+import manilhaG4163 from "../assets/manilha_carga_g4163.webp";
+import manilhaG4263 from "../assets/manilha_carga_g4263.webp";
+import manilhaG5243 from "../assets/manilha_carga_g5243.webp";
+import manilhaG5263 from "../assets/manilha_carga_g5263.webp";
+import manilhaP6033 from "../assets/manilha_carga_p6033.webp";
 
-type ManilhasSectionProps = {
-  manilhas: Manilha[];
+interface Manilha {
+  name: string;
+  tag: string;
+  image: string;
+}
+
+interface ManilhaCarouselProps {
   activeManilha: number;
   onPrev: () => void;
   onNext: () => void;
   onSelect: (index: number) => void;
-  globalMousePos: MousePosition;
-};
+  getCardTransform: (cardRef: React.RefObject<HTMLElement>, intensity?: number) => {
+    rotX: number;
+    rotY: number;
+    shadowX: number;
+    shadowY: number;
+  };
+}
 
-const ManilhasSection = ({
-  manilhas,
+export function ManilhaCarousel({
   activeManilha,
   onPrev,
   onNext,
   onSelect,
-  globalMousePos,
-}: ManilhasSectionProps) => {
+  getCardTransform,
+}: ManilhaCarouselProps) {
   const sliderCardRef = useRef<HTMLDivElement>(null);
-  const transform = getCardTransform(sliderCardRef, globalMousePos, 0.3);
+
+  const manilhas: Manilha[] = [
+    { name: "Bow Shackle SC G-4161", tag: "Pino roscado", image: manilhaG4161 },
+    { name: "Bow Shackle BN G-4163", tag: "Pino de segurança", image: manilhaG4163 },
+    { name: "Dee Shackle SC G-4151", tag: "Corpo compacto", image: manilhaG4151 },
+    { name: "Dee Shackle BN G-4153", tag: "Alta resistência", image: manilhaG4153 },
+    { name: "BigMouth Bow BN G-4263", tag: "Boca ampliada", image: manilhaG4263 },
+    { name: "Super Bow FN G-5243", tag: "Fixação com porca", image: manilhaG5243 },
+    { name: "Super Bow BN G-5263", tag: "Grau 8", image: manilhaG5263 },
+    { name: "Sling Shackle BN P-6033", tag: "Uso com lingas", image: manilhaP6033 },
+  ];
 
   return (
     <section className="border-t border-slate-800/70 bg-slate-950/70" id="manilhas">
@@ -30,7 +55,9 @@ const ManilhasSection = ({
             <p className="text-sm uppercase tracking-[0.3em] text-amber-200/80">
               Linha de manilhas
             </p>
-            <h2 className="text-3xl font-semibold text-white">Manilhas em destaque</h2>
+            <h2 className="text-3xl font-semibold text-white">
+              Manilhas em destaque
+            </h2>
             <p className="max-w-2xl text-slate-300">
               Selecione cada modelo para visualizar aplicações e
               especificações com foco em segurança e conformidade.
@@ -52,20 +79,20 @@ const ManilhasSection = ({
           </div>
         </div>
 
-        <div
+        <div 
           ref={sliderCardRef}
           className="relative mt-10 overflow-hidden rounded-3xl border border-slate-800/70 bg-slate-900/40"
-          style={{
+          style={{ 
             perspective: "1200px",
-            transform: `perspective(1200px) rotateX(${transform.rotX}deg) rotateY(${transform.rotY}deg)`,
-            boxShadow: `${transform.shadowX}px ${transform.shadowY}px 50px 5px rgba(0, 0, 0, 0.5)`,
+            transform: `perspective(1200px) rotateX(${getCardTransform(sliderCardRef, 0.3).rotX}deg) rotateY(${getCardTransform(sliderCardRef, 0.3).rotY}deg)`,
+            boxShadow: `${getCardTransform(sliderCardRef, 0.3).shadowX}px ${getCardTransform(sliderCardRef, 0.3).shadowY}px 50px 5px rgba(0, 0, 0, 0.5)`,
             transition: "transform 0.3s ease-out, box-shadow 0.3s ease-out",
           }}
           id="slider-container"
         >
           <div
             className="flex transition-transform duration-500"
-            style={{
+            style={{ 
               transform: `translateX(-${activeManilha * 100}%)`,
               backfaceVisibility: "hidden",
             }}
@@ -77,7 +104,9 @@ const ManilhasSection = ({
                     <p className="text-xs uppercase tracking-[0.3em] text-amber-200/80">
                       {item.tag}
                     </p>
-                    <h3 className="text-2xl font-semibold text-white">{item.name}</h3>
+                    <h3 className="text-2xl font-semibold text-white">
+                      {item.name}
+                    </h3>
                     <p className="text-slate-300">
                       Componentes certificados para aplicações industriais
                       críticas, com documentação técnica completa.
@@ -118,6 +147,4 @@ const ManilhasSection = ({
       </div>
     </section>
   );
-};
-
-export default ManilhasSection;
+}

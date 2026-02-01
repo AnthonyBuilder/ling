@@ -1,98 +1,25 @@
-import { useEffect, useState } from "react";
-import slingImage from "./assets/slingpng.webp";
-import manilhaG4151 from "./assets/manilha_carga_g4151.png";
-import manilhaG4153 from "./assets/manilha_carga_g4153.png";
-import manilhaG4161 from "./assets/manilha_carga_g4161.webp";
-import manilhaG4163 from "./assets/manilha_carga_g4163.webp";
-import manilhaG4263 from "./assets/manilha_carga_g4263.webp";
-import manilhaG5243 from "./assets/manilha_carga_g5243.webp";
-import manilhaG5263 from "./assets/manilha_carga_g5263.webp";
-import manilhaP6033 from "./assets/manilha_carga_p6033.webp";
-import certAbinfer from "./assets/certificado-abinfer.png";
-import certCodipro from "./assets/certificado-codipro.png";
-import certGreenPin from "./assets/certificado-green-pin.png";
-import Header from "@/components/Header";
-import HeroSection from "@/components/HeroSection";
-import ManilhasSection from "@/components/ManilhasSection";
-import ProdutosSection from "@/components/ProdutosSection";
-import Manilhas3DSection from "@/components/Manilhas3DSection";
-import QualidadeSection from "@/components/QualidadeSection";
-import CertificacoesSection from "@/components/CertificacoesSection";
-import Footer from "@/components/Footer";
-import type { Certificacao, Manilha } from "@/types";
-import type { MousePosition } from "@/lib/getCardTransform";
+import { useState, useEffect } from "react";
+import {
+  Header,
+  Hero,
+  ManilhaCarousel,
+  Products,
+  Manilhas3D,
+  Quality,
+  Certifications,
+  Footer,
+} from "./components";
 
 function App() {
-  const manilhas: Manilha[] = [
-    {
-      name: "Bow Shackle SC G-4161",
-      tag: "Pino roscado",
-      image: manilhaG4161,
-    },
-    {
-      name: "Bow Shackle BN G-4163",
-      tag: "Pino de segurança",
-      image: manilhaG4163,
-    },
-    {
-      name: "Dee Shackle SC G-4151",
-      tag: "Corpo compacto",
-      image: manilhaG4151,
-    },
-    {
-      name: "Dee Shackle BN G-4153",
-      tag: "Alta resistência",
-      image: manilhaG4153,
-    },
-    {
-      name: "BigMouth Bow BN G-4263",
-      tag: "Boca ampliada",
-      image: manilhaG4263,
-    },
-    {
-      name: "Super Bow FN G-5243",
-      tag: "Fixação com porca",
-      image: manilhaG5243,
-    },
-    {
-      name: "Super Bow BN G-5263",
-      tag: "Grau 8",
-      image: manilhaG5263,
-    },
-    {
-      name: "Sling Shackle BN P-6033",
-      tag: "Uso com lingas",
-      image: manilhaP6033,
-    },
-  ];
-  const tracepartsEmbedUrl = "https://www.traceparts.com/";
-  const certificacoes: Certificacao[] = [
-    {
-      name: "ABINFER",
-      image: certAbinfer,
-      desc: "Associação Brasileira da Infraestrutura e Indústrias de Base",
-    },
-    {
-      name: "Green Pin",
-      image: certGreenPin,
-      desc: "Parceiro oficial Green Pin para produtos premium",
-    },
-    {
-      name: "CODIPRO",
-      image: certCodipro,
-      desc: "Certificação internacional de produtos de elevação",
-    },
-  ];
   const [activeManilha, setActiveManilha] = useState(0);
-  const [globalMousePos, setGlobalMousePos] = useState<MousePosition>({
-    x: 0,
-    y: 0,
-  });
-  const totalManilhas = manilhas.length;
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [globalMousePos, setGlobalMousePos] = useState({ x: 0, y: 0 });
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+
   const handlePrev = () =>
-    setActiveManilha((prev) => (prev - 1 + totalManilhas) % totalManilhas);
+    setActiveManilha((prev) => (prev - 1 + 8) % 8);
   const handleNext = () =>
-    setActiveManilha((prev) => (prev + 1) % totalManilhas);
+    setActiveManilha((prev) => (prev + 1) % 8);
 
   useEffect(() => {
     const handleGlobalMouseMove = (e: MouseEvent) => {
@@ -105,30 +32,69 @@ function App() {
     };
   }, []);
 
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setMousePos({ x, y });
+  };
+
+  const handleCardMouseLeave = () => {
+    setHoveredCard(null);
+    setMousePos({ x: 0, y: 0 });
+  };
+
+  const getCardTransform = (cardRef: React.RefObject<HTMLElement>, intensity: number = 1) => {
+    if (!cardRef.current) return { rotX: 0, rotY: 0, shadowX: 0, shadowY: 0 };
+    
+    const rect = cardRef.current.getBoundingClientRect();
+    const cardCenterX = rect.left + rect.width / 2;
+    const cardCenterY = rect.top + rect.height / 2;
+    
+    const deltaX = globalMousePos.x - cardCenterX;
+    const deltaY = globalMousePos.y - cardCenterY;
+    
+    const rotX = (deltaY / window.innerHeight) * 8 * intensity;
+    const rotY = (deltaX / window.innerWidth) * 8 * intensity;
+    const shadowX = (deltaX / window.innerWidth) * 12 * intensity;
+    const shadowY = (deltaY / window.innerHeight) * 12 * intensity;
+    
+    return { rotX, rotY, shadowX, shadowY };
+  };
+
+
   return (
     <div className="relative min-h-screen bg-slate-950 text-slate-100">
       <Header />
+      
       <main>
-        <HeroSection slingImage={slingImage} globalMousePos={globalMousePos} />
-        <ManilhasSection
-          manilhas={manilhas}
+        <Hero getCardTransform={getCardTransform} />
+        <ManilhaCarousel
           activeManilha={activeManilha}
           onPrev={handlePrev}
           onNext={handleNext}
           onSelect={setActiveManilha}
-          globalMousePos={globalMousePos}
+          getCardTransform={getCardTransform}
         />
-        <ProdutosSection />
-        <Manilhas3DSection
-          manilhas={manilhas}
-          tracepartsEmbedUrl={tracepartsEmbedUrl}
+        <Products
+          hoveredCard={hoveredCard}
+          mousePos={mousePos}
+          onCardEnter={setHoveredCard}
+          onCardLeave={handleCardMouseLeave}
+          onCardMouseMove={handleCardMouseMove}
         />
-        <QualidadeSection />
-        <CertificacoesSection certificacoes={certificacoes} />
+        <Manilhas3D />
+        <Quality
+          hoveredCard={hoveredCard}
+          onCardEnter={setHoveredCard}
+          onCardLeave={() => setHoveredCard(null)}
+        />
+        <Certifications />
       </main>
+
       <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

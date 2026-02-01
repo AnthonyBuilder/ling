@@ -1,4 +1,4 @@
-const Header = () => {
+export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
@@ -33,6 +33,4 @@ const Header = () => {
       </div>
     </header>
   );
-};
-
-export default Header;
+}

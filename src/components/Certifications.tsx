@@ -1,21 +1,33 @@
-import type { Certificacao } from "@/types";
+import certAbinfer from "../assets/certificado-abinfer.png";
+import certCodipro from "../assets/certificado-codipro.png";
+import certGreenPin from "../assets/certificado-green-pin.png";
 
-type CertificacoesSectionProps = {
-  certificacoes: Certificacao[];
-};
+interface Certification {
+  name: string;
+  image: string;
+  desc: string;
+}
 
-const CertificacoesSection = ({ certificacoes }: CertificacoesSectionProps) => {
+export function Certifications() {
+  const certifications: Certification[] = [
+    { name: "ABINFER", image: certAbinfer, desc: "Associação Brasileira da Infraestrutura e Indústrias de Base" },
+    { name: "Green Pin", image: certGreenPin, desc: "Parceiro oficial Green Pin para produtos premium" },
+    { name: "CODIPRO", image: certCodipro, desc: "Certificação internacional de produtos de elevação" },
+  ];
+
   return (
     <section className="border-t border-slate-800/70 bg-slate-950/60" id="certificacoes">
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="mb-10 space-y-3 text-center">
-          <h2 className="text-3xl font-semibold text-white">Certificações e Parcerias</h2>
+          <h2 className="text-3xl font-semibold text-white">
+            Certificações e Parcerias
+          </h2>
           <p className="text-slate-300">
             Credenciados e homologados pelas principais entidades do setor
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
-          {certificacoes.map((cert) => (
+          {certifications.map((cert) => (
             <div
               key={cert.name}
               className="group relative overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900/40 p-6 transition-all duration-300 hover:border-amber-500/40"
@@ -37,6 +49,4 @@ const CertificacoesSection = ({ certificacoes }: CertificacoesSectionProps) => {
       </div>
     </section>
   );
-};
-
-export default CertificacoesSection;
+}

@@ -68,6 +68,22 @@
   .text-foreground {
     color: hsl(var(--foreground));
   }
+  
+  .animate-gradient-shift {
+    background-size: 100% 100%;
+    animation: gradientShift 15s ease infinite;
+  }
+  
+  @keyframes gradientShift {
+    0%, 100% {
+      background-position: 0% 0%;
+      opacity: 0.2;
+    }
+    50% {
+      background-position: 10% 10%;
+      opacity: 0.6;
+    }
+  }
 }
 
 @layer base {
