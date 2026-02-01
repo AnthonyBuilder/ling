@@ -15,7 +15,7 @@ export function Hero({ getCardTransform }: HeroProps) {
 
   return (
     <section className="relative overflow-hidden" id="empresa">
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/30 via-transparent to-transparent animate-gradient-shift" />
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/40 via-transparent to-transparent animate-gradient-shift" />
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24">
         <div className="space-y-6">
           <p className="text-sm uppercase tracking-[0.3em] text-amber-200/80">
